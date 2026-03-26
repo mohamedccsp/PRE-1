@@ -1876,20 +1876,7 @@ function getWeatherContext() {
   };
 }
 
-function getLanguageForCountry(code) {
-  const langMap = {
-    SA: 'Arabic', AE: 'Arabic', EG: 'Arabic', KW: 'Arabic', QA: 'Arabic',
-    BH: 'Arabic', OM: 'Arabic', JO: 'Arabic', LB: 'Arabic', IQ: 'Arabic',
-    JP: 'Japanese', KR: 'Korean', CN: 'Chinese', DE: 'German', FR: 'French',
-    IT: 'Italian', ES: 'Spanish', BR: 'Portuguese', MX: 'Spanish', AR: 'Spanish',
-    RU: 'Russian', TR: 'Turkish', PK: 'Urdu', IN: 'Hindi', ID: 'Indonesian',
-    PH: 'Filipino', NG: 'English'
-  };
-  return langMap[code] || 'English';
-}
-
 function buildSystemPrompt(ctx) {
-  const lang = getLanguageForCountry(ctx.country);
   return `You are a friendly outfit advisor AI. You give practical clothing advice based on weather and local culture.
 
 CURRENT WEATHER DATA:
@@ -1900,7 +1887,7 @@ CURRENT WEATHER DATA:
 - Wind: ${ctx.wind} km/h
 
 RULES:
-- Respond in ${lang} language
+- Respond in English only
 - Give DO's and DON'T's for outfit choices
 - Consider the weather (temperature, rain, wind, humidity)
 - Consider cultural norms for ${ctx.countryName} (modest dress codes, local customs)
@@ -1910,7 +1897,7 @@ RULES:
 }
 
 async function callLLM(messages) {
-  const res = await fetch('https://text.pollinations.ai/openai', {
+  const res = await fetch('https://text.pollinations.ai/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -1921,8 +1908,7 @@ async function callLLM(messages) {
     })
   });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
-  const data = await res.json();
-  return data.choices[0].message.content;
+  return await res.text();
 }
 
 async function sendUserMessage() {
@@ -1974,9 +1960,8 @@ async function triggerAutoAdvice() {
   const ctx = getWeatherContext();
   if (!ctx) return;
 
-  const lang = getLanguageForCountry(ctx.country);
   chatHistory = [
-    { role: 'user', content: `What should I wear today in ${ctx.city}, ${ctx.countryName}? The weather is ${ctx.temp}°C, ${ctx.condition}, humidity ${ctx.humidity}%, wind ${ctx.wind} km/h. Give me DO's and DON'T's. Respond in ${lang}.` }
+    { role: 'user', content: `What should I wear today in ${ctx.city}, ${ctx.countryName}? The weather is ${ctx.temp}°C, ${ctx.condition}, humidity ${ctx.humidity}%, wind ${ctx.wind} km/h. Give me DO's and DON'T's.` }
   ];
 
   // Show badge notification
