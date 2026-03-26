@@ -12,7 +12,142 @@
     background: #0f172a;
     color: #e2e8f0;
     min-height: 100vh;
-    padding: 2rem 1rem;
+    display: flex;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: #1e293b;
+    border-right: 1px solid #334155;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .sidebar label {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+  }
+
+  .sidebar select, .sidebar input {
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    border-radius: 0.5rem;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .sidebar select:focus, .sidebar input:focus {
+    border-color: #38bdf8;
+  }
+
+  .sidebar select[multiple] {
+    height: 220px;
+  }
+
+  .sidebar select option {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .sidebar select option:checked {
+    background: #38bdf8 linear-gradient(0deg, #38bdf8 0%, #38bdf8 100%);
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  .sidebar .hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.2rem;
+  }
+
+  .sidebar-btn {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .sidebar-btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    color: #0f172a;
+  }
+
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: #334155;
+    color: #e2e8f0;
+  }
+
+  .btn-secondary:hover { background: #475569; }
+
+  .sidebar-divider {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 0.25rem 0;
+  }
+
+  .city-count {
+    font-size: 0.8rem;
+    color: #38bdf8;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .sidebar-loading {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.85rem;
+    padding: 1rem 0;
+  }
+
+  .sidebar-loading .mini-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #334155;
+    border-top-color: #38bdf8;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 0.5rem;
+  }
+
+  /* ── Main content ── */
+  .main {
+    flex: 1;
+    padding: 2rem 1.5rem;
+    overflow-y: auto;
   }
 
   header {
@@ -37,9 +172,9 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
@@ -63,16 +198,8 @@
     margin-bottom: 1.25rem;
   }
 
-  .city-name {
-    font-size: 1.35rem;
-    font-weight: 600;
-  }
-
-  .city-country {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    font-weight: 400;
-  }
+  .city-name { font-size: 1.35rem; font-weight: 600; }
+  .city-country { font-size: 0.8rem; color: #94a3b8; font-weight: 400; }
 
   .current {
     display: flex;
@@ -83,16 +210,8 @@
     border-bottom: 1px solid #334155;
   }
 
-  .current-icon {
-    font-size: 3.2rem;
-    line-height: 1;
-  }
-
-  .current-temp {
-    font-size: 2.8rem;
-    font-weight: 700;
-    letter-spacing: -1px;
-  }
+  .current-icon { font-size: 3.2rem; line-height: 1; }
+  .current-temp { font-size: 2.8rem; font-weight: 700; letter-spacing: -1px; }
 
   .current-details {
     margin-left: auto;
@@ -102,16 +221,12 @@
     line-height: 1.7;
   }
 
-  .current-condition {
-    font-size: 0.95rem;
-    color: #cbd5e1;
-    margin-top: 0.15rem;
-  }
+  .current-condition { font-size: 0.95rem; color: #cbd5e1; margin-top: 0.15rem; }
 
   .forecast {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0.5rem;
+    gap: 0.35rem;
   }
 
   .forecast-day {
@@ -122,80 +237,59 @@
   }
 
   .forecast-day .day-name {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 0.75rem; color: #94a3b8; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.5px;
   }
 
-  .forecast-day .day-icon {
-    font-size: 1.5rem;
-    margin: 0.4rem 0;
-  }
+  .forecast-day .day-icon { font-size: 1.5rem; margin: 0.4rem 0; }
+  .forecast-day .day-temps { font-size: 0.8rem; }
+  .forecast-day .day-high { font-weight: 600; color: #e2e8f0; }
+  .forecast-day .day-low { color: #64748b; margin-left: 2px; }
 
-  .forecast-day .day-temps {
-    font-size: 0.8rem;
-  }
-
-  .forecast-day .day-high {
-    font-weight: 600;
-    color: #e2e8f0;
-  }
-
-  .forecast-day .day-low {
-    color: #64748b;
-    margin-left: 2px;
-  }
-
-  .loading {
-    text-align: center;
-    padding: 3rem;
-    color: #64748b;
-  }
+  .loading { text-align: center; padding: 3rem; color: #64748b; }
 
   .loading .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid #334155;
-    border-top-color: #38bdf8;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    width: 36px; height: 36px;
+    border: 3px solid #334155; border-top-color: #38bdf8;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
     margin: 0 auto 1rem;
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .error-msg {
-    background: #7f1d1d33;
-    color: #fca5a5;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-    text-align: center;
+    background: #7f1d1d33; color: #fca5a5;
+    padding: 0.75rem 1rem; border-radius: 0.5rem;
+    font-size: 0.9rem; text-align: center;
   }
 
   .refresh-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: #334155;
-    color: #e2e8f0;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background 0.2s;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: #334155; color: #e2e8f0; border: none;
+    padding: 0.5rem 1rem; border-radius: 0.5rem;
+    cursor: pointer; font-size: 0.85rem; transition: background 0.2s;
   }
 
   .refresh-btn:hover { background: #475569; }
 
   .last-updated {
-    text-align: center;
-    color: #64748b;
-    font-size: 0.8rem;
-    margin-top: 1.5rem;
+    text-align: center; color: #64748b;
+    font-size: 0.8rem; margin-top: 1.5rem;
+  }
+
+  /* ── Mobile: sidebar becomes top bar ── */
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar {
+      width: 100%; min-width: 100%;
+      height: auto; position: relative;
+      flex-direction: column;
+      border-right: none;
+      border-bottom: 1px solid #334155;
+    }
+    .sidebar select[multiple] { height: 140px; }
+    .main { padding: 1.5rem 1rem; }
+    .grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 400px) {
@@ -207,28 +301,230 @@
 </head>
 <body>
 
-<header>
-  <h1>Weather Dashboard</h1>
-  <p id="subtitle">Loading weather data...</p>
-</header>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <h2>Settings</h2>
 
-<div class="grid" id="cards">
-  <div class="loading">
-    <div class="spinner"></div>
-    Fetching weather data...
+  <div>
+    <label for="countrySearch">Search Country</label>
+    <input type="text" id="countrySearch" placeholder="Type to filter..." autocomplete="off">
   </div>
+
+  <div>
+    <label for="countrySelect">Country</label>
+    <select id="countrySelect">
+      <option value="">Loading countries...</option>
+    </select>
+  </div>
+
+  <hr class="sidebar-divider">
+
+  <div>
+    <label for="citySearch">Search City</label>
+    <input type="text" id="citySearch" placeholder="Filter cities..." autocomplete="off" disabled>
+  </div>
+
+  <div>
+    <label for="citySelect">Cities (select up to 4)</label>
+    <div id="cityLoading" class="sidebar-loading" style="display:none;">
+      <div class="mini-spinner"></div>
+      Finding cities...
+    </div>
+    <select id="citySelect" multiple disabled>
+      <option value="" disabled>Select a country first</option>
+    </select>
+    <div class="hint">Hold Ctrl/Cmd to select multiple</div>
+    <div class="city-count" id="cityCount"></div>
+  </div>
+
+  <button class="sidebar-btn btn-primary" id="applyBtn" disabled>Show Weather</button>
+
+  <hr class="sidebar-divider">
+
+  <button class="sidebar-btn btn-secondary" id="resetBtn">Reset to Auto-Detect</button>
+</aside>
+
+<!-- Main content -->
+<div class="main">
+  <header>
+    <h1>Weather Dashboard</h1>
+    <p id="subtitle">Loading weather data...</p>
+  </header>
+
+  <div class="grid" id="cards">
+    <div class="loading">
+      <div class="spinner"></div>
+      Detecting your location...
+    </div>
+  </div>
+
+  <div class="last-updated" id="footer"></div>
 </div>
 
-<div class="last-updated" id="footer"></div>
-
 <script>
-const CITIES = [
-  { name: "New York", country: "US", lat: 40.7128, lon: -74.006, tz: "America/New_York" },
-  { name: "London",   country: "UK", lat: 51.5074, lon: -0.1278, tz: "Europe/London" },
-  { name: "Tokyo",    country: "JP", lat: 35.6762, lon: 139.6503, tz: "Asia/Tokyo" }
+const FALLBACK_CITIES = [
+  { name: "Riyadh",  country: "SA", lat: 24.7136, lon: 46.6753, tz: "Asia/Riyadh" },
+  { name: "Dubai",   country: "AE", lat: 25.2048, lon: 55.2708, tz: "Asia/Dubai" },
+  { name: "Cairo",   country: "EG", lat: 30.0444, lon: 31.2357, tz: "Africa/Cairo" },
+  { name: "Istanbul", country: "TR", lat: 41.0082, lon: 28.9784, tz: "Europe/Istanbul" }
 ];
 
-// WMO Weather Code -> { description, icon }
+let CITIES = [];
+let allCountries = [];
+let availableCities = [];
+const STORAGE_KEY = "weatherDashboardPrefs";
+
+// ── LocalStorage ──
+function savePrefs(countryCode, countryName, selectedCities) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ countryCode, countryName, selectedCities }));
+}
+
+function loadPrefs() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function clearPrefs() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+// ── API calls ──
+async function detectLocation() {
+  const res = await fetch("http://ip-api.com/json/?fields=city,lat,lon,country,countryCode,timezone");
+  if (!res.ok) throw new Error("Geolocation failed");
+  return res.json();
+}
+
+async function fetchCountries() {
+  const res = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2");
+  if (!res.ok) throw new Error("Failed to fetch countries");
+  const data = await res.json();
+  return data
+    .map(c => ({ code: c.cca2, name: c.name.common }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+// Major cities database — top cities for countries, used as search seeds
+const CITY_SEEDS = {
+  SA: ["Riyadh","Jeddah","Mecca","Medina","Dammam","Tabuk","Taif","Buraidah","Khamis Mushait","Abha","Najran","Jizan","Yanbu","Hail","Jubail"],
+  AE: ["Dubai","Abu Dhabi","Sharjah","Ajman","Al Ain","Ras al-Khaimah","Fujairah","Umm Al Quwain"],
+  EG: ["Cairo","Alexandria","Giza","Luxor","Aswan","Port Said","Suez","Mansoura","Tanta","Ismailia","Faiyum","Zagazig"],
+  TR: ["Istanbul","Ankara","Izmir","Bursa","Antalya","Adana","Konya","Gaziantep","Mersin","Diyarbakir"],
+  US: ["New York","Los Angeles","Chicago","Houston","Phoenix","Philadelphia","San Antonio","San Diego","Dallas","San Jose"],
+  GB: ["London","Birmingham","Manchester","Leeds","Glasgow","Liverpool","Edinburgh","Bristol","Sheffield","Newcastle"],
+  JP: ["Tokyo","Yokohama","Osaka","Nagoya","Sapporo","Fukuoka","Kobe","Kyoto","Kawasaki","Hiroshima"],
+  DE: ["Berlin","Hamburg","Munich","Cologne","Frankfurt","Stuttgart","Dusseldorf","Leipzig","Dortmund","Essen"],
+  FR: ["Paris","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg","Montpellier","Bordeaux","Lille"],
+  IN: ["Mumbai","Delhi","Bangalore","Hyderabad","Chennai","Kolkata","Ahmedabad","Pune","Jaipur","Lucknow"],
+  BR: ["Sao Paulo","Rio de Janeiro","Brasilia","Salvador","Fortaleza","Belo Horizonte","Manaus","Curitiba","Recife","Porto Alegre"],
+  CN: ["Shanghai","Beijing","Guangzhou","Shenzhen","Chengdu","Hangzhou","Wuhan","Chongqing","Nanjing","Tianjin"],
+  RU: ["Moscow","Saint Petersburg","Novosibirsk","Yekaterinburg","Kazan","Nizhny Novgorod","Samara","Chelyabinsk","Omsk","Rostov"],
+  KR: ["Seoul","Busan","Incheon","Daegu","Daejeon","Gwangju","Suwon","Ulsan","Changwon","Goyang"],
+  AU: ["Sydney","Melbourne","Brisbane","Perth","Adelaide","Gold Coast","Canberra","Newcastle","Hobart","Darwin"],
+  CA: ["Toronto","Montreal","Vancouver","Calgary","Edmonton","Ottawa","Winnipeg","Quebec City","Hamilton","Halifax"],
+  MX: ["Mexico City","Guadalajara","Monterrey","Puebla","Cancun","Tijuana","Merida","Leon","Queretaro","Chihuahua"],
+  IT: ["Rome","Milan","Naples","Turin","Palermo","Genoa","Bologna","Florence","Catania","Venice"],
+  ES: ["Madrid","Barcelona","Valencia","Seville","Zaragoza","Malaga","Bilbao","Murcia","Palma","Las Palmas"],
+  PK: ["Karachi","Lahore","Islamabad","Faisalabad","Rawalpindi","Multan","Peshawar","Quetta","Hyderabad","Gujranwala"],
+  NG: ["Lagos","Kano","Ibadan","Abuja","Port Harcourt","Benin City","Kaduna","Maiduguri","Zaria","Aba"],
+  ID: ["Jakarta","Surabaya","Bandung","Medan","Semarang","Makassar","Palembang","Depok","Tangerang","Bekasi"],
+  PH: ["Manila","Quezon City","Davao","Cebu","Zamboanga","Antipolo","Taguig","Pasig","Cagayan de Oro","Valenzuela"],
+  ZA: ["Johannesburg","Cape Town","Durban","Pretoria","Port Elizabeth","Bloemfontein","Nelspruit","Polokwane","East London","Kimberley"],
+  AR: ["Buenos Aires","Cordoba","Rosario","Mendoza","San Miguel de Tucuman","La Plata","Mar del Plata","Salta","Santa Fe","Neuquen"],
+  KW: ["Kuwait City","Hawalli","Salmiya","Jahra","Farwaniya","Mangaf","Fahaheel","Sabah Al Salem"],
+  QA: ["Doha","Al Wakrah","Al Khor","Umm Salal","Al Rayyan","Mesaieed","Dukhan","Lusail"],
+  BH: ["Manama","Riffa","Muharraq","Hamad Town","Isa Town","Sitra","Budaiya","Jidhafs"],
+  OM: ["Muscat","Salalah","Sohar","Nizwa","Sur","Ibri","Barka","Rustaq"],
+  JO: ["Amman","Zarqa","Irbid","Aqaba","Madaba","Jerash","Mafraq","Salt"],
+  LB: ["Beirut","Tripoli","Sidon","Tyre","Jounieh","Byblos","Zahle","Baalbek"],
+  IQ: ["Baghdad","Basra","Mosul","Erbil","Sulaymaniyah","Kirkuk","Najaf","Karbala"]
+};
+
+async function searchCitiesInCountry(countryCode, countryName) {
+  const seeds = CITY_SEEDS[countryCode];
+  const seen = new Set();
+  const cities = [];
+
+  if (seeds) {
+    // Use known city names as search terms — much more reliable
+    const batches = [];
+    for (let i = 0; i < seeds.length; i += 5) {
+      batches.push(seeds.slice(i, i + 5));
+    }
+
+    for (const batch of batches) {
+      const results = await Promise.all(batch.map(async (name) => {
+        try {
+          const res = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=5&language=en&format=json`
+          );
+          if (!res.ok) return [];
+          const data = await res.json();
+          return data.results || [];
+        } catch { return []; }
+      }));
+
+      for (const list of results) {
+        for (const r of list) {
+          if (r.country_code === countryCode && !seen.has(r.name)) {
+            seen.add(r.name);
+            cities.push({
+              name: r.name, population: r.population || 0,
+              lat: r.latitude, lon: r.longitude, tz: r.timezone
+            });
+          }
+        }
+      }
+    }
+  } else {
+    // Fallback: search with country name + common prefixes
+    const terms = [countryName.split(" ")[0], "al", "san", "new", "port", "el", "la", "de"];
+    for (let i = 0; i < terms.length && cities.length < 15; i += 4) {
+      const batch = terms.slice(i, i + 4);
+      const results = await Promise.all(batch.map(async (term) => {
+        try {
+          const res = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(term)}&count=100&language=en&format=json`
+          );
+          if (!res.ok) return [];
+          const data = await res.json();
+          return data.results || [];
+        } catch { return []; }
+      }));
+
+      for (const list of results) {
+        for (const r of list) {
+          if (r.country_code === countryCode && !seen.has(r.name) && r.population) {
+            seen.add(r.name);
+            cities.push({
+              name: r.name, population: r.population,
+              lat: r.latitude, lon: r.longitude, tz: r.timezone
+            });
+          }
+        }
+      }
+    }
+  }
+
+  cities.sort((a, b) => b.population - a.population);
+  return cities;
+}
+
+async function fetchCityWeather(city) {
+  const params = new URLSearchParams({
+    latitude: city.lat, longitude: city.lon,
+    current: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m",
+    daily: "weather_code,temperature_2m_max,temperature_2m_min",
+    timezone: city.tz, forecast_days: 5
+  });
+  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+// ── WMO codes ──
 const WMO_CODES = {
   0:  { desc: "Clear sky",           icon: "\u2600\uFE0F" },
   1:  { desc: "Mainly clear",        icon: "\uD83C\uDF24\uFE0F" },
@@ -274,20 +570,7 @@ function getDayName(dateStr) {
   return d.toLocaleDateString("en-US", { weekday: "short" });
 }
 
-async function fetchCity(city) {
-  const params = new URLSearchParams({
-    latitude: city.lat,
-    longitude: city.lon,
-    current: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m",
-    daily: "weather_code,temperature_2m_max,temperature_2m_min",
-    timezone: city.tz,
-    forecast_days: 5
-  });
-  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
-
+// ── Rendering ──
 function renderCard(city, data) {
   const cur = data.current;
   const w = getWeather(cur.weather_code);
@@ -306,14 +589,15 @@ function renderCard(city, data) {
       </div>`;
   }
 
+  const escapedName = city.name.replace(/'/g, "\\'");
   return `
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="city-name">${city.name} <span class="city-country">${city.country}</span></div>
-          <div class="current-condition">${w.desc}</div>
+          <div class="city-name">${city.isUser ? "&#x1F4CD; " : ""}${city.name} <span class="city-country">${city.country}</span></div>
+          <div class="current-condition">${w.desc}${city.isUser ? " &mdash; Your location" : ""}</div>
         </div>
-        <button class="refresh-btn" onclick="refreshCity('${city.name}')">&#x21bb; Refresh</button>
+        <button class="refresh-btn" onclick="refreshCity('${escapedName}')">&#x21bb; Refresh</button>
       </div>
       <div class="current">
         <div class="current-icon">${w.icon}</div>
@@ -328,35 +612,19 @@ function renderCard(city, data) {
 }
 
 function renderError(city, err) {
+  const escapedName = city.name.replace(/'/g, "\\'");
   return `
     <div class="card">
       <div class="card-header">
         <div class="city-name">${city.name} <span class="city-country">${city.country}</span></div>
-        <button class="refresh-btn" onclick="refreshCity('${city.name}')">&#x21bb; Retry</button>
+        <button class="refresh-btn" onclick="refreshCity('${escapedName}')">&#x21bb; Retry</button>
       </div>
       <div class="error-msg">Failed to load weather: ${err.message}</div>
     </div>`;
 }
 
 const cityResults = new Map();
-
-async function loadAll() {
-  const container = document.getElementById("cards");
-  const results = await Promise.allSettled(
-    CITIES.map(async (city) => {
-      try {
-        const data = await fetchCity(city);
-        cityResults.set(city.name, { city, data });
-        return { city, data };
-      } catch (err) {
-        cityResults.set(city.name, { city, error: err });
-        return { city, error: err };
-      }
-    })
-  );
-
-  renderAll();
-}
+let currentCountryName = null;
 
 function renderAll() {
   const container = document.getElementById("cards");
@@ -369,15 +637,36 @@ function renderAll() {
       : renderCard(city, entry.data);
   }
   const now = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-  document.getElementById("subtitle").textContent = "Real-time weather for New York, London & Tokyo";
+  document.getElementById("subtitle").textContent = currentCountryName
+    ? `Weather across ${currentCountryName}`
+    : `Weather for ${CITIES.map(c => c.name).join(", ")}`;
   document.getElementById("footer").textContent = `Last updated: ${now}`;
+}
+
+async function loadWeatherForCities() {
+  const container = document.getElementById("cards");
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Fetching weather data...</div>';
+  cityResults.clear();
+
+  await Promise.allSettled(
+    CITIES.map(async (city) => {
+      try {
+        const data = await fetchCityWeather(city);
+        cityResults.set(city.name, { city, data });
+      } catch (err) {
+        cityResults.set(city.name, { city, error: err });
+      }
+    })
+  );
+
+  renderAll();
 }
 
 async function refreshCity(name) {
   const city = CITIES.find(c => c.name === name);
   if (!city) return;
   try {
-    const data = await fetchCity(city);
+    const data = await fetchCityWeather(city);
     cityResults.set(name, { city, data });
   } catch (err) {
     cityResults.set(name, { city, error: err });
@@ -385,7 +674,251 @@ async function refreshCity(name) {
   renderAll();
 }
 
-loadAll();
+// ── Sidebar logic ──
+const MAX_CITIES = 4;
+const countrySelect = document.getElementById("countrySelect");
+const countrySearch = document.getElementById("countrySearch");
+const citySearch = document.getElementById("citySearch");
+const citySelect = document.getElementById("citySelect");
+const cityCount = document.getElementById("cityCount");
+const cityLoading = document.getElementById("cityLoading");
+const applyBtn = document.getElementById("applyBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+function populateCountryDropdown(countries, selectedCode) {
+  allCountries = countries;
+  renderCountryOptions(countries, selectedCode);
+}
+
+function renderCountryOptions(filtered, selectedCode) {
+  countrySelect.innerHTML = '<option value="">-- Choose a country --</option>';
+  for (const c of filtered) {
+    const opt = document.createElement("option");
+    opt.value = c.code;
+    opt.textContent = `${c.name} (${c.code})`;
+    if (c.code === selectedCode) opt.selected = true;
+    countrySelect.appendChild(opt);
+  }
+}
+
+countrySearch.addEventListener("input", () => {
+  const q = countrySearch.value.toLowerCase();
+  const filtered = allCountries.filter(c =>
+    c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+  );
+  renderCountryOptions(filtered, countrySelect.value);
+});
+
+function renderCityOptions(filter) {
+  const q = (filter || "").toLowerCase();
+  const selectedNames = new Set(Array.from(citySelect.selectedOptions).map(o => o.value));
+  citySelect.innerHTML = "";
+
+  const filtered = q
+    ? availableCities.filter(c => c.name.toLowerCase().includes(q))
+    : availableCities;
+
+  if (filtered.length === 0) {
+    citySelect.innerHTML = '<option value="" disabled>No matching cities</option>';
+    return;
+  }
+
+  for (const c of filtered) {
+    const opt = document.createElement("option");
+    opt.value = c.name;
+    opt.textContent = `${c.name} (pop: ${(c.population / 1000).toFixed(0)}k)`;
+    opt.dataset.lat = c.lat;
+    opt.dataset.lon = c.lon;
+    opt.dataset.tz = c.tz;
+    if (selectedNames.has(c.name)) opt.selected = true;
+    citySelect.appendChild(opt);
+  }
+}
+
+citySearch.addEventListener("input", () => {
+  renderCityOptions(citySearch.value);
+  updateCityCount();
+});
+
+countrySelect.addEventListener("change", async () => {
+  const code = countrySelect.value;
+  if (!code) {
+    citySelect.innerHTML = '<option value="" disabled>Select a country first</option>';
+    citySelect.disabled = true;
+    citySearch.disabled = true;
+    citySearch.value = "";
+    applyBtn.disabled = true;
+    cityCount.textContent = "";
+    return;
+  }
+
+  const country = allCountries.find(c => c.code === code);
+  citySelect.disabled = true;
+  citySelect.innerHTML = "";
+  citySearch.disabled = true;
+  citySearch.value = "";
+  cityLoading.style.display = "block";
+  applyBtn.disabled = true;
+  cityCount.textContent = "";
+
+  try {
+    availableCities = await searchCitiesInCountry(code, country ? country.name : "");
+    cityLoading.style.display = "none";
+    citySelect.disabled = false;
+    citySearch.disabled = false;
+
+    if (availableCities.length === 0) {
+      citySelect.innerHTML = '<option value="" disabled>No cities found</option>';
+      return;
+    }
+
+    renderCityOptions("");
+
+    // Auto-select top 4
+    const options = citySelect.options;
+    for (let i = 0; i < Math.min(MAX_CITIES, options.length); i++) {
+      options[i].selected = true;
+    }
+    updateCityCount();
+    applyBtn.disabled = false;
+  } catch (err) {
+    cityLoading.style.display = "none";
+    citySelect.innerHTML = '<option value="" disabled>Error loading cities</option>';
+  }
+});
+
+citySelect.addEventListener("change", () => {
+  const selected = Array.from(citySelect.selectedOptions);
+  if (selected.length > MAX_CITIES) {
+    selected[selected.length - 1].selected = false;
+  }
+  updateCityCount();
+  applyBtn.disabled = citySelect.selectedOptions.length === 0;
+});
+
+function updateCityCount() {
+  const count = citySelect.selectedOptions.length;
+  cityCount.textContent = count > 0 ? `${count}/${MAX_CITIES} cities selected` : "";
+}
+
+applyBtn.addEventListener("click", () => {
+  const code = countrySelect.value;
+  const country = allCountries.find(c => c.code === code);
+  const selected = Array.from(citySelect.selectedOptions);
+
+  CITIES = selected.map(opt => ({
+    name: opt.value,
+    country: code,
+    lat: parseFloat(opt.dataset.lat),
+    lon: parseFloat(opt.dataset.lon),
+    tz: opt.dataset.tz
+  }));
+
+  currentCountryName = country ? country.name : code;
+  savePrefs(code, currentCountryName, CITIES);
+  loadWeatherForCities();
+});
+
+resetBtn.addEventListener("click", async () => {
+  clearPrefs();
+  countrySelect.value = "";
+  countrySearch.value = "";
+  citySearch.value = "";
+  citySearch.disabled = true;
+  citySelect.innerHTML = '<option value="" disabled>Select a country first</option>';
+  citySelect.disabled = true;
+  applyBtn.disabled = true;
+  cityCount.textContent = "";
+  renderCountryOptions(allCountries, "");
+  await autoDetectAndLoad();
+});
+
+// ── Initialization ──
+async function autoDetectAndLoad() {
+  const container = document.getElementById("cards");
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Detecting your location...</div>';
+
+  try {
+    const loc = await detectLocation();
+    const userCity = {
+      name: loc.city, country: loc.countryCode,
+      lat: loc.lat, lon: loc.lon, tz: loc.timezone, isUser: true
+    };
+
+    const countryCities = await searchCitiesInCountry(loc.countryCode, loc.country);
+    const others = countryCities
+      .filter(c => c.name.toLowerCase() !== loc.city.toLowerCase())
+      .slice(0, MAX_CITIES - 1)
+      .map(c => ({ name: c.name, country: loc.countryCode, lat: c.lat, lon: c.lon, tz: c.tz }));
+
+    CITIES = [userCity, ...others].slice(0, MAX_CITIES);
+    if (CITIES.length < 1) throw new Error("Not enough cities");
+
+    currentCountryName = loc.country;
+
+    // Set sidebar to detected country
+    if (countrySelect.querySelector(`option[value="${loc.countryCode}"]`)) {
+      countrySelect.value = loc.countryCode;
+      countrySelect.dispatchEvent(new Event("change"));
+    }
+  } catch (err) {
+    console.warn("Auto-detect failed, using fallback:", err);
+    CITIES = [...FALLBACK_CITIES];
+    currentCountryName = null;
+  }
+
+  await loadWeatherForCities();
+}
+
+async function loadFromSavedPrefs(prefs) {
+  CITIES = prefs.selectedCities.slice(0, MAX_CITIES);
+  currentCountryName = prefs.countryName;
+
+  // Restore sidebar state
+  if (countrySelect.querySelector(`option[value="${prefs.countryCode}"]`)) {
+    countrySelect.value = prefs.countryCode;
+    countrySelect.dispatchEvent(new Event("change"));
+
+    // Wait for cities to load, then re-select saved ones
+    await new Promise(r => setTimeout(r, 100));
+    const waitForCities = () => new Promise(resolve => {
+      const check = () => {
+        if (!citySelect.disabled && citySelect.options.length > 0) return resolve();
+        setTimeout(check, 200);
+      };
+      check();
+    });
+    await waitForCities();
+
+    const savedNames = new Set(prefs.selectedCities.map(c => c.name));
+    for (const opt of citySelect.options) {
+      opt.selected = savedNames.has(opt.value);
+    }
+    updateCityCount();
+    applyBtn.disabled = false;
+  }
+
+  await loadWeatherForCities();
+}
+
+async function init() {
+  // Load countries in parallel with checking prefs
+  try {
+    const countries = await fetchCountries();
+    populateCountryDropdown(countries, "");
+  } catch {
+    countrySelect.innerHTML = '<option value="">Failed to load countries</option>';
+  }
+
+  const prefs = loadPrefs();
+  if (prefs && prefs.selectedCities && prefs.selectedCities.length > 0) {
+    await loadFromSavedPrefs(prefs);
+  } else {
+    await autoDetectAndLoad();
+  }
+}
+
+init();
 </script>
 </body>
 </html>
