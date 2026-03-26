@@ -4,5 +4,8 @@
       "Bash(gh repo:*)",
       "Bash(gh issue:*)"
     ]
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true
   }
 }
