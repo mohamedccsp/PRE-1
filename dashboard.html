@@ -1106,6 +1106,7 @@
   <hr class="sidebar-divider">
 
   <button class="sidebar-btn btn-secondary" id="resetBtn">Reset to Auto-Detect</button>
+
 </aside>
 
 <!-- Main content -->
@@ -1245,7 +1246,6 @@ let CITIES = [];
 let allCountries = [];
 let availableCities = [];
 const STORAGE_KEY = "weatherDashboardPrefs";
-
 // ── LocalStorage ──
 function savePrefs(countryCode, countryName, selectedCities) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ countryCode, countryName, selectedCities }));
@@ -1270,11 +1270,11 @@ async function detectLocation() {
 }
 
 async function fetchCountries() {
-  const res = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2");
+  const res = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2,languages");
   if (!res.ok) throw new Error("Failed to fetch countries");
   const data = await res.json();
   return data
-    .map(c => ({ code: c.cca2, name: c.name.common }))
+    .map(c => ({ code: c.cca2, name: c.name.common, language: c.languages ? Object.values(c.languages)[0] : 'English' }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -1497,6 +1497,7 @@ function renderError(city, err) {
 
 const cityResults = new Map();
 let currentCountryName = null;
+let currentCountryLanguage = 'English';
 
 function renderAll() {
   const container = document.getElementById("cards");
@@ -1556,7 +1557,6 @@ const cityCount = document.getElementById("cityCount");
 const cityLoading = document.getElementById("cityLoading");
 const applyBtn = document.getElementById("applyBtn");
 const resetBtn = document.getElementById("resetBtn");
-
 function populateCountryDropdown(countries, selectedCode) {
   allCountries = countries;
   renderCountryOptions(countries, selectedCode);
@@ -1686,6 +1686,7 @@ applyBtn.addEventListener("click", () => {
   }));
 
   currentCountryName = country ? country.name : code;
+  currentCountryLanguage = country ? country.language : 'English';
   savePrefs(code, currentCountryName, CITIES);
   loadWeatherForCities();
 });
@@ -1726,6 +1727,8 @@ async function autoDetectAndLoad() {
     if (CITIES.length < 1) throw new Error("Not enough cities");
 
     currentCountryName = loc.country;
+    const detectedCountry = allCountries.find(c => c.code === loc.countryCode);
+    currentCountryLanguage = detectedCountry ? detectedCountry.language : 'English';
 
     if (countrySelect.querySelector(`option[value="${loc.countryCode}"]`)) {
       countrySelect.value = loc.countryCode;
@@ -1735,6 +1738,7 @@ async function autoDetectAndLoad() {
     console.warn("Auto-detect failed, using fallback:", err);
     CITIES = [...FALLBACK_CITIES];
     currentCountryName = null;
+    currentCountryLanguage = 'English';
   }
 
   await loadWeatherForCities();
@@ -1743,6 +1747,8 @@ async function autoDetectAndLoad() {
 async function loadFromSavedPrefs(prefs) {
   CITIES = prefs.selectedCities.slice(0, MAX_CITIES);
   currentCountryName = prefs.countryName;
+  const savedCountry = allCountries.find(c => c.name === prefs.countryName);
+  currentCountryLanguage = savedCountry ? savedCountry.language : 'English';
 
   if (countrySelect.querySelector(`option[value="${prefs.countryCode}"]`)) {
     countrySelect.value = prefs.countryCode;
@@ -1846,7 +1852,10 @@ function removeTyping() {
 }
 
 function formatChatText(text) {
-  return text
+  const escaped = text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return escaped
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
 }
@@ -1863,6 +1872,7 @@ function getWeatherContext() {
     city: userCity.name,
     country: userCity.country,
     countryName: currentCountryName || userCity.country,
+    language: currentCountryLanguage || 'English',
     temp: Math.round(cur.temperature_2m),
     humidity: cur.relative_humidity_2m,
     wind: Math.round(cur.wind_speed_10m),
@@ -1887,7 +1897,7 @@ CURRENT WEATHER DATA:
 - Wind: ${ctx.wind} km/h
 
 RULES:
-- Respond in English only
+- Respond in ${ctx.language}. If you cannot respond in ${ctx.language}, fall back to English
 - Give DO's and DON'T's for outfit choices
 - Consider the weather (temperature, rain, wind, humidity)
 - Consider cultural norms for ${ctx.countryName} (modest dress codes, local customs)
@@ -1897,18 +1907,29 @@ RULES:
 }
 
 async function callLLM(messages) {
-  const res = await fetch('https://text.pollinations.ai/', {
+  const res = await fetch('http://localhost:3000/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'openai',
       messages: messages,
       temperature: 0.7,
       max_tokens: 300
     })
   });
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
-  return await res.text();
+
+  if (!res.ok) {
+    let errMsg = `API error: ${res.status}`;
+    try {
+      const errBody = await res.json();
+      if (errBody.error && errBody.error.message) errMsg = errBody.error.message;
+    } catch (_) {}
+    throw new Error(errMsg);
+  }
+
+  const data = await res.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content || !content.trim()) throw new Error('Empty response from API');
+  return content.trim();
 }
 
 async function sendUserMessage() {
@@ -1944,7 +1965,7 @@ async function generateResponse() {
     chatStatus.textContent = '// AI-POWERED STYLE INTEL';
   } catch (err) {
     removeTyping();
-    addChatMsg('bot', `Connection error: ${err.message}. Please try again.`);
+    addChatMsg('bot', 'Connection error. Make sure the proxy server is running (node proxy.js).');
     chatStatus.textContent = '// CONNECTION ERROR';
     setTimeout(() => { chatStatus.textContent = '// AI-POWERED STYLE INTEL'; }, 3000);
   }
@@ -1974,22 +1995,21 @@ async function triggerAutoAdvice() {
   } else {
     // Pre-generate in background
     try {
-      const ctx2 = getWeatherContext();
-      const systemMsg = { role: 'system', content: buildSystemPrompt(ctx2) };
+      const systemMsg = { role: 'system', content: buildSystemPrompt(ctx) };
       const reply = await callLLM([systemMsg, ...chatHistory]);
       chatHistory.push({ role: 'assistant', content: reply });
 
       // When user opens chat, show the conversation
-      const origOpen = chatFab.onclick;
-      chatFab.onclick = null;
       chatFab.addEventListener('click', function showPreloaded() {
         chatFab.removeEventListener('click', showPreloaded);
         for (const msg of chatHistory) {
           addChatMsg(msg.role === 'assistant' ? 'bot' : 'user', msg.content);
         }
       }, { once: true });
-    } catch {
-      // Silently fail — user can ask manually
+    } catch (err) {
+      console.warn('[AutoAdvice] Failed:', err.message);
+      chatBadge.style.display = 'none';
+      autoAdviceShown = false;
     }
   }
 }
