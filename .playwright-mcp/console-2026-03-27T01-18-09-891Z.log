@@ -1,0 +1,10 @@
+[    1218ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
+[  136135ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://ip-api.com/json/?fields=city,lat,lon,country,countryCode,timezone:0
+[  136136ms] [WARNING] Auto-detect failed, using fallback: TypeError: Failed to fetch
+    at detectLocation (http://localhost:8000/dashboard.html:1267:21)
+    at autoDetectAndLoad (http://localhost:8000/dashboard.html:1716:23)
+    at init (http://localhost:8000/dashboard.html:1790:9) @ http://localhost:8000/dashboard.html:1739
+[  136246ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://api.open-meteo.com/v1/forecast?latitude=24.7136&longitude=46.6753&current=temperature_2m%2Crelative_humidity_2m%2Cweather_code%2Cwind_speed_10m&daily=weather_code%2Ctemperature_2m_max%2Ctemperature_2m_min&timezone=Asia%2FRiyadh&forecast_days=5:0
+[  136246ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://api.open-meteo.com/v1/forecast?latitude=25.2048&longitude=55.2708&current=temperature_2m%2Crelative_humidity_2m%2Cweather_code%2Cwind_speed_10m&daily=weather_code%2Ctemperature_2m_max%2Ctemperature_2m_min&timezone=Asia%2FDubai&forecast_days=5:0
+[  136246ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://api.open-meteo.com/v1/forecast?latitude=30.0444&longitude=31.2357&current=temperature_2m%2Crelative_humidity_2m%2Cweather_code%2Cwind_speed_10m&daily=weather_code%2Ctemperature_2m_max%2Ctemperature_2m_min&timezone=Africa%2FCairo&forecast_days=5:0
+[  136246ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current=temperature_2m%2Crelative_humidity_2m%2Cweather_code%2Cwind_speed_10m&daily=weather_code%2Ctemperature_2m_max%2Ctemperature_2m_min&timezone=Europe%2FIstanbul&forecast_days=5:0
