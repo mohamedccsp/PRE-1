@@ -1688,11 +1688,13 @@ applyBtn.addEventListener("click", () => {
   currentCountryName = country ? country.name : code;
   currentCountryLanguage = country ? country.language : 'English';
   savePrefs(code, currentCountryName, CITIES);
+  resetChat();
   loadWeatherForCities();
 });
 
 resetBtn.addEventListener("click", async () => {
   clearPrefs();
+  resetChat();
   countrySelect.value = "";
   countrySearch.value = "";
   citySearch.value = "";
@@ -1783,12 +1785,9 @@ async function init() {
     countrySelect.innerHTML = '<option value="" disabled>Failed to load countries</option>';
   }
 
-  const prefs = loadPrefs();
-  if (prefs && prefs.selectedCities && prefs.selectedCities.length > 0) {
-    await loadFromSavedPrefs(prefs);
-  } else {
-    await autoDetectAndLoad();
-  }
+  // Always auto-detect location on load (ignore saved prefs)
+  clearPrefs();
+  await autoDetectAndLoad();
 }
 
 // ── Outfit Advisor Chatbot ──
@@ -1804,10 +1803,28 @@ const chatStatus = document.getElementById('chatStatus');
 let chatHistory = [];
 let chatBusy = false;
 let autoAdviceShown = false;
+let chatPreloaded = false;
+
+function resetChat() {
+  chatHistory = [];
+  chatBusy = false;
+  autoAdviceShown = false;
+  chatPreloaded = false;
+  chatMessages.innerHTML = '';
+  chatBadge.style.display = 'none';
+  chatStatus.textContent = '// AI-POWERED STYLE INTEL';
+}
 
 chatFab.addEventListener('click', () => {
   chatPanel.classList.toggle('open');
   chatBadge.style.display = 'none';
+  if (chatPreloaded) {
+    chatPreloaded = false;
+    for (const msg of chatHistory) {
+      if (msg.role === 'user') continue;
+      addChatMsg('bot', msg.content);
+    }
+  }
 });
 
 chatClose.addEventListener('click', () => {
@@ -1856,6 +1873,7 @@ function formatChatText(text) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   return escaped
+    .replace(/^#{1,4}\s+(.*)$/gm, '<strong>$1</strong>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
 }
@@ -1897,8 +1915,8 @@ CURRENT WEATHER DATA:
 - Wind: ${ctx.wind} km/h
 
 RULES:
-- Respond in ${ctx.language}. If you cannot respond in ${ctx.language}, fall back to English
-- Give DO's and DON'T's for outfit choices
+- Respond entirely in ${ctx.language}, including all headings, labels, and section titles. If you cannot respond in ${ctx.language}, fall back to English
+- Structure advice as recommended and not recommended outfit choices, using translated headings in ${ctx.language}
 - Consider the weather (temperature, rain, wind, humidity)
 - Consider cultural norms for ${ctx.countryName} (modest dress codes, local customs)
 - Be concise — max 150 words
@@ -1982,15 +2000,14 @@ async function triggerAutoAdvice() {
   if (!ctx) return;
 
   chatHistory = [
-    { role: 'user', content: `What should I wear today in ${ctx.city}, ${ctx.countryName}? The weather is ${ctx.temp}°C, ${ctx.condition}, humidity ${ctx.humidity}%, wind ${ctx.wind} km/h. Give me DO's and DON'T's.` }
+    { role: 'user', content: `What should I wear today in ${ctx.city}, ${ctx.countryName}? The weather is ${ctx.temp}°C, ${ctx.condition}, humidity ${ctx.humidity}%, wind ${ctx.wind} km/h.` }
   ];
 
   // Show badge notification
   chatBadge.style.display = 'block';
 
-  // If panel is open, show typing and generate
+  // If panel is open, generate and show directly
   if (chatPanel.classList.contains('open')) {
-    addChatMsg('user', chatHistory[0].content);
     await generateResponse();
   } else {
     // Pre-generate in background
@@ -1998,14 +2015,7 @@ async function triggerAutoAdvice() {
       const systemMsg = { role: 'system', content: buildSystemPrompt(ctx) };
       const reply = await callLLM([systemMsg, ...chatHistory]);
       chatHistory.push({ role: 'assistant', content: reply });
-
-      // When user opens chat, show the conversation
-      chatFab.addEventListener('click', function showPreloaded() {
-        chatFab.removeEventListener('click', showPreloaded);
-        for (const msg of chatHistory) {
-          addChatMsg(msg.role === 'assistant' ? 'bot' : 'user', msg.content);
-        }
-      }, { once: true });
+      chatPreloaded = true;
     } catch (err) {
       console.warn('[AutoAdvice] Failed:', err.message);
       chatBadge.style.display = 'none';
